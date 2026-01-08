@@ -1,12 +1,6 @@
-//
-//  README.md
-//  CountriesList
-//
-//  Created by Aleem Bhatti on 08/01/2026.
-//
 
 
-# Countries List App – SwiftUI MVVM Assignment
+# Countries List App – SwiftUI MVVM 
 
 ## Overview
 
