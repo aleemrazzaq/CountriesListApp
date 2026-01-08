@@ -46,6 +46,7 @@ final class CountriesViewModelTests: XCTestCase {
     
     // MARK: - Test: Failure Case
     func testFailureLoadCountries() {
+        
         let mockService = MockCountryService()
         mockService.result = .failure(URLError(.notConnectedToInternet))
         
@@ -53,14 +54,11 @@ final class CountriesViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Error Received")
         
         viewModel.$errorMessage
-            .dropFirst()
+            .compactMap { $0 }          
             .sink { message in
-                // Ensure it is not nil
-                XCTAssertNotNil(message, "Expected error message on failure")
-                // Safely check contents
-                if let message = message {
-                    XCTAssertTrue(message.contains("internet") || message.contains("Unable to load"), "Error message should be meaningful")
-                }
+                XCTAssertFalse(message.isEmpty, "Error message should not be empty")
+                XCTAssertTrue(message.contains("internet") || message.contains("Unable"),
+                              "Error message should be meaningful")
                 expectation.fulfill()
             }
             .store(in: &cancellables)
@@ -68,6 +66,7 @@ final class CountriesViewModelTests: XCTestCase {
         viewModel.loadCountries()
         wait(for: [expectation], timeout: 2)
     }
+
 
 
 }

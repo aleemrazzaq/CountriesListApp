@@ -30,11 +30,14 @@ final class CountriesViewModel: ObservableObject {
         errorMessage = nil
         
         service.fetchCountries()
+            .receive(on: DispatchQueue.main) // important for tests
             .sink { [weak self] completion in
                 self?.isLoading = false
+                
                 switch completion {
                 case .finished:
                     break
+                    
                 case .failure(let error):
                     if let urlError = error as? URLError {
                         switch urlError.code {
@@ -46,14 +49,16 @@ final class CountriesViewModel: ObservableObject {
                             self?.errorMessage = "Unable to load countries. Please try again."
                         }
                     } else {
-                        self?.errorMessage = error.localizedDescription
+                        self?.errorMessage = "Unable to load countries. Please try again."
                     }
                 }
             } receiveValue: { [weak self] countries in
                 self?.countries = countries
             }
             .store(in: &cancellables)
+
     }
+
 
     
     private func hideToastLater() {
